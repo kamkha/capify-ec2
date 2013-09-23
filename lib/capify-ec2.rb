@@ -59,8 +59,8 @@ class CapifyEc2
     if @ec2_config[:use_iam_profile]
       { :use_iam_profile       => true }
     else
-      { :aws_access_key_id     => @ec2_config[:aws_access_key_id], 
-        :aws_secret_access_key => @ec2_config[:aws_secret_access_key] }
+      { :aws_access_key_id     => aws_access_key_id,
+        :aws_secret_access_key => aws_secret_access_key }
     end
   end
   
@@ -100,7 +100,7 @@ class CapifyEc2
     # Project and Stages info..
     info_label_width = [@ec2_config[:aws_project_tag], @ec2_config[:aws_stages_tag]].map(&:length).max
     puts "#{@ec2_config[:aws_project_tag].rjust( info_label_width ).bold}: #{@ec2_config[:project_tags].join(', ')}." if @ec2_config[:project_tags].any?
-    puts "#{@ec2_config[:aws_stages_tag].rjust( info_label_width ).bold}: #{@ec2_config[:stage]}." unless @ec2_config[:stage].empty?
+    puts "#{@ec2_config[:aws_stages_tag].rjust( info_label_width ).bold}: #{@ec2_config[:stage]}." unless @ec2_config[:stage].to_s.empty?
     
     # Title row.
     status_output = []
@@ -140,7 +140,7 @@ class CapifyEc2
 
   def desired_instances(region = nil)
     instances = @ec2_config[:project_tags].empty? ? @instances : project_instances
-    @ec2_config[:stage].empty? ? instances : get_instances_by_stage(instances)
+    @ec2_config[:stage].to_s.empty? ? instances : get_instances_by_stage(instances)
   end
 
   def get_instances_by_role(role)
